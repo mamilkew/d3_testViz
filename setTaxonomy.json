@@ -1,0 +1,70 @@
+{
+  "name": "SET Taxonomy",
+  "children": [
+    {
+      "name": "Civil and Infrastructure Engineering",
+      "children": [
+        {"name": "Construction, Engineering and Infrastructure Management (CEIM)"},
+        {"name": "Geotechnical and Earth Resources Engineering (GTE)"},
+        {"name": "Geosystem Exploration and Petroleum GeoEngineering (GEPG)"},
+        {"name": "Structural Engineering (SE)"},
+        {"name": "Transport Engineering (TE)"},
+        {"name": "Water Engineering and Management (WEM)"}
+      ]
+    },
+    {
+      "name": "Industrial Systems Engineering",
+      "children": [
+        {
+          "name": "Mechatronics (MEC)",
+          "children": [
+            {
+              "name": "Control Systems",
+              "children": [
+                {"name": "Accident Prevention"},
+                {"name": "Machine control"},
+              ]
+            },
+            {
+              "name": "Automation Technology"
+            }
+          ]
+        },
+        {"name": "Microelectronics and Embedded Systems (MES)"},
+        {"name": "Industrial and Manufacturing Engineering (IME)"},
+        {"name": "NanoTechnology"}
+      ]
+    }
+  ]
+}
+
+
+
+
+{
+  "name": "Department",
+  "children": [
+    {
+      "name": "FoS1",
+      "children": [
+        {
+          "name": "ResearchArea1",
+          "children": [
+            {"name": "R1_Keywords1"},
+            {"name": "R1_Keywords2"},
+          ]
+        },
+        {
+          "name": "ResearchArea2",
+          "children": [
+            {"name": "R2_Keywords1"},
+            {"name": "R2_Keywords2"},
+          ]
+        }
+      ]
+    },
+    {"name": "FoS2)"},
+    {"name": "FoS3"},
+    {"name": "FoS4"}
+  ]
+}

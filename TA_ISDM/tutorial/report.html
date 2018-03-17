@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    .bar{
+      fill: steelblue;
+    }
+
+    .bar:hover{
+      fill: brown;
+    }
+
+    .axis {
+      font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    /* pie chart */
+    .arc text {
+      font: 10px sans-serif;
+      text-anchor: middle;
+    }
+
+    .arc path {
+      stroke: #fff;
+    }
+
+    /* progress bar */
+    .progressSelector{
+      margin-bottom: 30px;
+    }
+  </style>
+
+</head>
+<body>
+  <h4>Bar Chart</h4>
+  <div id="bar_chart"></div>
+
+  <h4>Pie Chart</h4>
+  <div id="pie_chart"></div>
+  
+  <h4>Progress Bar</h4>
+  <select class="progressSelector" onchange="moveProgressBar(value)">
+	<option value="started" selected>Started</option>
+	<option value="inProgress">In Progress</option>
+	<option value="completed">Completed</option>
+  </select>
+  <div class="progress"></div>
+
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+  // set the dimensions of the canvas
+  var margin = {top: 20, right: 20, bottom: 70, left: 40},
+  width = 600 - margin.left - margin.right,
+  height = 300 - margin.top - margin.bottom;
+
+  // set the ranges
+  var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+  var y = d3.scale.linear().range([height, 0]);
+
+  // define the axis
+  var xAxis = d3.svg.axis()
+  .scale(x)
+  .orient("bottom")
+
+  var yAxis = d3.svg.axis()
+  .scale(y)
+  .orient("left")
+  .ticks(10);
+
+  // add the SVG element
+  var svg = d3.select("#bar_chart").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+  "translate(" + margin.left + "," + margin.top + ")");
+
+   var bar_sample = [
+    	{
+    		"Letter": "A",
+    		"Freq": 20
+    	},
+    	{
+    		"Letter" : "B",
+    		"Freq": 12
+    	},
+    	{
+    		"Letter" : "C",
+    		"Freq": 47
+    	},
+    	{
+    		"Letter" : "D",
+    		"Freq": 34
+    	},
+    	{
+    		"Letter" : "E",
+    		"Freq" : 54
+    	},
+    	{
+    		"Letter" : "F",
+    		"Freq" : 21
+    	},
+    	{
+    		"Letter" : "G",
+    		"Freq" : 57
+    	},
+    	{
+    		"Letter" : "H",
+    		"Freq" : 31
+    	},
+    	{
+    		"Letter" : "I",
+    		"Freq" : 17
+    	},
+    	{
+    		"Letter" : "J",
+    		"Freq" : 5
+    	},
+    	{
+    		"Letter" : "K",
+    		"Freq" : 23
+    	},
+    	{
+    		"Letter" : "L",
+    		"Freq" : 39
+    	},
+    	{
+    		"Letter" : "M",
+    		"Freq" : 29
+    	},
+    	{
+    		"Letter" : "N",
+    		"Freq" : 33
+    	}
+    ];
+
+  // load the data
+    bar_sample.forEach(function(d) {
+      d.Letter = d.Letter;
+      d.Freq = +d.Freq;
+    });
+
+    // scale the range of the data
+    x.domain(bar_sample.map(function(d) { return d.Letter; }));
+    y.domain([0, d3.max(bar_sample, function(d) { return d.Freq; })]);
+
+    // add axis
+    svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .selectAll("text")
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", "-.55em")
+    .attr("transform", "rotate(-90)" );
+
+    svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 5)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Frequency");
+
+    // Add bar chart
+    svg.selectAll("bar")
+    .data(bar_sample)
+    .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", function(d) { return x(d.Letter); })
+    .attr("width", x.rangeBand())
+    .attr("y", function(d) { return y(d.Freq); })
+    .attr("height", function(d) { return height - y(d.Freq); });
+
+
+
+//Pie Chart
+  var width_p = 960,
+      height_p = 500,
+      radius = Math.min(width_p, height_p) / 2;
+
+  var color = d3.scale.ordinal()
+      .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+  var arc = d3.svg.arc()
+      .outerRadius(radius - 10)
+      .innerRadius(0);
+
+  var labelArc = d3.svg.arc()
+      .outerRadius(radius - 40)
+      .innerRadius(radius - 40);
+
+  var pie = d3.layout.pie()
+      .sort(null)
+      .value(function(d) { return d.amount; });
+
+  var svg_p = d3.select("#pie_chart").append("svg")
+      .attr("width", width_p)
+      .attr("height", height_p)
+    .append("g")
+      .attr("transform", "translate(" + width_p / 2 + "," + height_p / 2 + ")");
+
+  var pie_data = [
+    {
+      "flight": "A",
+      "amount": 1234
+    },
+    {
+      "flight": "B",
+      "amount": 3456
+    },
+    {
+      "flight": "C",
+      "amount": 5678
+    },
+    {
+      "flight": "D",
+      "amount": 6789
+    }
+  ];
+
+    pie_data.forEach(function(d) {
+      d.flight = d.flight;
+      d.amount = +d.amount;
+    // });
+    console.log(pie_data);
+    var g = svg_p.selectAll(".arc")
+        .data(pie(pie_data))
+      .enter().append("g")
+        .attr("class", "arc");
+
+    g.append("path")
+        .attr("d", arc)
+        .style("fill", function(x) { return color(x.data.flight); });
+
+    g.append("text")
+        .attr("transform", function(y) { return "translate(" + labelArc.centroid(y) + ")"; })
+        .attr("dy", ".35em")
+        .text(function(z) { return z.data.flight + ": " +z.data.amount; });
+  });
+
+
+  // Progress Bar
+  var svg_pg = d3.select('.progress')
+		.append('svg')
+		.attr('height', 100)
+		.attr('width', 500);
+
+	var states = ['started', 'inProgress', 'completed'],
+	    segmentWidth = 100,
+		currentState = 'started';
+
+	var colorScale = d3.scale.ordinal()
+		.domain(states)
+		.range(['yellow', 'orange', 'green']);
+
+	svg_pg.append('rect')
+		.attr('class', 'bg-rect')
+		.attr('rx', 10)
+		.attr('ry', 10)
+		.attr('fill', 'gray')
+		.attr('height', 15)
+		.attr('width', function(){
+			return segmentWidth * states.length;
+		})
+		.attr('x', 0);
+
+	var progress = svg_pg.append('rect')
+		.attr('class', 'progress-rect')
+		.attr('fill', function(){
+			return colorScale(currentState);
+		})
+		.attr('height', 15)
+		.attr('width', 0)
+		.attr('rx', 10)
+		.attr('ry', 10)
+		.attr('x', 0);
+
+	progress.transition()
+		.duration(1000)
+		.attr('width', function(){
+			var index = states.indexOf(currentState);
+			return (index + 1) * segmentWidth;
+		});
+
+	function moveProgressBar(state){
+		progress.transition()
+			.duration(1000)
+			.attr('fill', function(){
+				return colorScale(state);
+			})
+			.attr('width', function(){
+				var index = states.indexOf(state);
+				return (index + 1) * segmentWidth;
+			});
+	}
+
+</script>
+</body>
+</html>
